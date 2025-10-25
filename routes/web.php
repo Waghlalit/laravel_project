@@ -16,4 +16,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+Route::get('/demo', function () {
+    return view('demo');
+});
+
 require __DIR__.'/settings.php';
