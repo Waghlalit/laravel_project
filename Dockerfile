@@ -36,3 +36,7 @@ EXPOSE 80
 
 # Start Apache
 CMD ["apache2-foreground"]
+
+# Set permissions for storage and cache
+RUN chown -R www-data:www-data storage bootstrap/cache
+RUN chmod -R 775 storage bootstrap/cache
