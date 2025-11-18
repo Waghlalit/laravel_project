@@ -1,27 +1,85 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\ContactController;
+use Illuminate\Http\Request;
 
-Route::get('/lang/{lang}', function($lang){
-    if(in_array($lang, ['en','hi'])) {
-        session(['lang'=>$lang]);
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+| This file defines all the routes for your application.
+| You can use controllers or closures. Here we show closures only.
+*/
+
+// Language switch
+Route::get('/lang/{lang}', function ($lang) {
+    if (in_array($lang, ['en', 'hi'])) {
+        session(['lang' => $lang]);
     }
     return redirect(url()->previous());
 });
 
-Route::get('/', [PageController::class, 'home'])->name('home');
-Route::get('/about', [PageController::class, 'about'])->name('about');
-Route::get('/services', [PageController::class, 'services'])->name('services');
-Route::get('/team', [PageController::class, 'team'])->name('team');
-Route::get('/clients', [PageController::class, 'clients'])->name('clients');
-Route::get('/why', [PageController::class, 'why'])->name('why');
-Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+// Static pages
+Route::get('/', function () {
+    return view('pages.home');   // resources/views/pages/home.blade.php
+})->name('home');
 
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::get('/about', function () {
+    return view('pages.about');
+})->name('about');
+
+Route::get('/services', function () {
+    return view('pages.services');
+})->name('services');
+
+Route::get('/team', function () {
+    return view('pages.team');
+})->name('team');
+
+Route::get('/clients', function () {
+    return view('pages.clients');
+})->name('clients');
+
+Route::get('/why', function () {
+    return view('pages.why');
+})->name('why');
+
+Route::get('/contact', function () {
+    return view('pages.contact');
+})->name('contact');
+
+// Handle contact form submission
+Route::post('/contact', function (Request $request) {
+    $data = $request->validate([
+        'name'    => 'required|string|max:255',
+        'email'   => 'required|email',
+        'message' => 'required|string',
+    ]);
+
+    // Example: save to DB or send mail
+    // \App\Models\Contact::create($data);
+
+    return back()->with('success', 'Message sent successfully!');
+})->name('contact.store');
 
 // API endpoints for dynamic content
-Route::get('/api/services', [PageController::class, 'apiServices']);
-Route::get('/api/team', [PageController::class, 'apiTeam']);
-Route::get('/api/clients', [PageController::class, 'apiClients']);
+Route::get('/api/services', function () {
+    return response()->json([
+        ['title' => 'Web Development', 'desc' => 'Building modern web apps'],
+        ['title' => 'SEO Optimization', 'desc' => 'Improve search rankings'],
+    ]);
+});
+
+Route::get('/api/team', function () {
+    return response()->json([
+        ['name' => 'Alice', 'role' => 'Developer'],
+        ['name' => 'Bob', 'role' => 'Designer'],
+    ]);
+});
+
+Route::get('/api/clients', function () {
+    return response()->json([
+        ['company' => 'Acme Corp', 'project' => 'Website redesign'],
+        ['company' => 'Globex', 'project' => 'Mobile app'],
+    ]);
+});
