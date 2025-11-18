@@ -83,3 +83,7 @@ Route::get('/api/clients', function () {
         ['company' => 'Globex', 'project' => 'Mobile app'],
     ]);
 });
+
+Route::get('/show-pdf', function () {
+        return view('pages.pdf');   // resources/views/pages/pdf.blade.php
+});
